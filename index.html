@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#24445f">
+  <title>San Diego Elementary School | Campus Map</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <section id="loginScreen" class="login-screen screen" aria-labelledby="loginTitle">
+    <div class="login-brand">
+      <img class="login-mark" src="assets/school-logo.webp" alt="San Diego Elementary School logo" width="72" height="72">
+      <div>
+        <p class="eyebrow">SAN DIEGO ELEMENTARY SCHOOL</p>
+        <h1 id="loginTitle">Campus Map</h1>
+        <p class="login-description">Building and room directory</p>
+      </div>
+    </div>
+    <form id="loginForm" class="login-card" novalidate>
+      <h2>Sign in</h2>
+      <label for="username">School account email</label>
+      <input id="username" name="username" type="email" inputmode="email" autocomplete="username" placeholder="name@school.edu.ph" required>
+      <label for="password">Password</label>
+      <div class="password-field">
+        <input id="password" name="password" type="password" autocomplete="current-password" required>
+        <button id="togglePassword" class="text-button" type="button" aria-label="Show password">Show</button>
+      </div>
+      <p id="loginError" class="login-error" role="alert" aria-live="polite"></p>
+      <p class="demo-login-note">Use the email and password assigned to your school account. Records are shared through the online school database.</p>
+      <button class="primary-button" type="submit">Sign in</button>
+    </form>
+<p id="databaseConnectionStatus" class="login-error database-status" role="status" aria-live="polite"></p>
+    <p class="login-footer">San Diego Elementary School</p>
+  </section>
+
+  <header id="appHeader" class="site-header hidden">
+    <a class="school-brand" href="#" id="brandHome" aria-label="Return to building selection">
+      <img class="school-mark" src="assets/school-logo.webp" alt="" width="46" height="46">
+      <span><strong>SAN DIEGO ELEMENTARY SCHOOL</strong><small>Campus Map</small></span>
+    </a>
+    <div class="header-actions">
+      <span id="signedInAs" class="signed-in-user"></span>
+      <nav class="site-nav" aria-label="Main navigation">
+        <button id="navBuildings" type="button" class="nav-button" aria-current="page">Buildings</button>
+        <button id="navRecords" type="button" class="nav-button">Classroom records</button>
+        <button id="navFlowchart" type="button" class="nav-button">Flowchart</button>
+        <button id="signOutButton" type="button" class="nav-button sign-out-button">Sign out</button>
+      </nav>
+    </div>
+  </header>
+
+  <main id="dashboardScreen" class="screen page-shell hidden" aria-labelledby="buildingHeading">
+    <div class="section-heading">
+      <p class="eyebrow">CAMPUS DIRECTORY</p>
+      <h1 id="buildingHeading">Select a Building</h1>
+    </div>
+    <div id="buildingCards" class="building-cards" role="group" aria-label="School buildings"></div>
+  </main>
+
+  <main id="buildingScreen" class="screen page-shell hidden" data-mobile-view="map" aria-labelledby="mapTitle">
+    <div class="map-topline">
+      <button id="backToBuildings" class="back-button" type="button"><span aria-hidden="true">←</span> All buildings</button>
+      <span id="buildingTag" class="floor-badge">1F</span>
+    </div>
+    <div class="map-heading">
+      <div>
+        <p class="eyebrow" id="mapEyebrow">BUILDING MAP</p>
+        <h1 id="mapTitle">HB BUILDING</h1>
+        <p id="mapCaption" class="map-caption">First floor plan</p>
+      </div>
+    </div>
+    <div id="floorTabs" class="floor-tabs" role="group" aria-label="Select floor"></div>
+    <div class="map-view-switch" role="group" aria-label="Choose map or room list">
+      <button type="button" class="map-view-button" data-map-view="map" aria-pressed="true">Floor plan</button>
+      <button type="button" class="map-view-button" data-map-view="rooms" aria-pressed="false">Room list</button>
+    </div>
+    <div class="map-layout">
+      <section class="plan-card" aria-label="Floor plan">
+        <div class="plan-viewport" id="planViewport">
+          <img id="floorImage" alt="Selected building floor plan" width="1536" height="864">
+          <div class="hotspots" id="hotspots" aria-label="Room selection"></div>
+        </div>
+      </section>
+      <aside class="directory-card" aria-label="Room directory">
+        <div class="directory-heading">
+          <h2>Rooms &amp; Facilities</h2>
+          <span class="room-count" id="roomCount">0</span>
+        </div>
+        <label class="visually-hidden" for="roomSearch">Search rooms and facilities</label>
+        <input id="roomSearch" class="room-search" type="search" placeholder="Search rooms or facilities" autocomplete="off">
+        <div id="roomList" class="room-list"></div>
+        <div id="roomListPagination" class="list-pagination hidden" aria-label="Room list pages">
+          <button id="roomListPrevious" type="button" class="page-button" disabled>Previous</button>
+          <span id="roomListPageInfo" class="page-indicator">Page 1 of 1</span>
+          <button id="roomListNext" type="button" class="page-button" disabled>Next</button>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <main id="flowchartScreen" class="screen flow-page hidden" aria-labelledby="flowTitle">
+    <div class="map-topline">
+      <button id="backFromFlowchart" class="back-button" type="button"><span aria-hidden="true">←</span> Buildings</button>
+    </div>
+    <h1 id="flowTitle">Building Navigation</h1>
+    <section class="flowchart" aria-label="Building selection process">
+      <div class="flow-node pill">Sign in</div>
+      <div class="flow-arrow" aria-hidden="true"></div>
+      <div class="flow-node decision">Select building</div>
+      <div id="flowBuildings" class="flow-branches" role="group" aria-label="Select building"></div>
+      <div id="flowSteps" class="flow-steps" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <main id="recordsScreen" class="screen page-shell hidden" aria-labelledby="recordsTitle">
+    <div class="section-heading">
+      <p class="eyebrow">TEACHERS · INVENTORY · BOOKS</p>
+      <h1 id="recordsTitle">Classroom Records</h1>
+      <p class="records-intro">Choose a numbered room to view its morning and afternoon teacher profiles, proposed inventory status, and classroom book list.</p>
+    </div>
+    <div id="recordsBuildingTabs" class="records-building-tabs" role="group" aria-label="Choose a building"></div>
+    <label for="recordsSearch" class="visually-hidden">Search rooms in the selected building</label>
+    <input id="recordsSearch" class="room-search records-search" type="search" placeholder="Choose a building first" autocomplete="off" disabled>
+    <div id="recordsRoomList" class="records-room-list"></div>
+    <div id="recordsPagination" class="list-pagination records-pagination hidden" aria-label="Classroom record pages">
+      <button id="recordsPrevious" type="button" class="page-button" disabled>Previous</button>
+      <span id="recordsPageInfo" class="page-indicator">Page 1 of 1</span>
+      <button id="recordsNext" type="button" class="page-button" disabled>Next</button>
+    </div>
+    <p id="recordsEmpty" class="empty-results hidden">No numbered rooms match this search.</p>
+  </main>
+
+  <section id="roomInfoPopup" class="room-popup-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="roomPopupTitle" aria-describedby="roomPopupDescription">
+    <div class="room-popup-card room-popup-card-wide" role="document">
+      <div class="room-popup-heading">
+        <div>
+          <p class="eyebrow">CLASSROOM RECORDS</p>
+          <h2 id="roomPopupTitle">Room information</h2>
+        </div>
+        <button id="closeRoomPopup" class="popup-close" type="button" aria-label="Close room information">×</button>
+      </div>
+      <p id="roomPopupDescription" class="room-popup-description"></p>
+      <div class="popup-tabs" role="tablist" aria-label="Classroom record sections">
+        <button type="button" class="popup-tab" data-popup-tab="teachers" role="tab" aria-selected="true">Teacher profiles</button>
+        <button type="button" class="popup-tab" data-popup-tab="inventory" role="tab" aria-selected="false">Inventory</button>
+        <button type="button" class="popup-tab" data-popup-tab="books" role="tab" aria-selected="false">Books</button>
+      </div>
+
+      <section id="popupPanelTeachers" class="popup-panel" data-popup-panel="teachers" role="tabpanel">
+        <p class="records-note">This room supports separate morning and afternoon teacher assignments. Admin can edit; User accounts are view-only.</p>
+        <form id="roomInfoForm" class="room-info-form">
+          <div class="schedule-grid">
+            <fieldset class="schedule-card">
+              <legend>Morning schedule</legend>
+              <label for="morningName">Name</label>
+              <input id="morningName" name="morningName" type="text" maxlength="120" placeholder="Teacher name" autocomplete="off">
+              <label for="morningGradeSection">Grade &amp; Section</label>
+              <input id="morningGradeSection" name="morningGradeSection" type="text" maxlength="80" placeholder="Grade and section" autocomplete="off">
+              <label for="morningYearsService">Year in Service</label>
+              <input id="morningYearsService" name="morningYearsService" type="text" maxlength="80" placeholder="Years in service" autocomplete="off">
+              <label for="morningItemBorrowed">Item Borrowed</label>
+              <input id="morningItemBorrowed" name="morningItemBorrowed" type="text" maxlength="180" placeholder="Borrowed item, if any" autocomplete="off">
+            </fieldset>
+            <fieldset class="schedule-card">
+              <legend>Afternoon schedule</legend>
+              <label for="afternoonName">Name</label>
+              <input id="afternoonName" name="afternoonName" type="text" maxlength="120" placeholder="Teacher name" autocomplete="off">
+              <label for="afternoonGradeSection">Grade &amp; Section</label>
+              <input id="afternoonGradeSection" name="afternoonGradeSection" type="text" maxlength="80" placeholder="Grade and section" autocomplete="off">
+              <label for="afternoonYearsService">Year in Service</label>
+              <input id="afternoonYearsService" name="afternoonYearsService" type="text" maxlength="80" placeholder="Years in service" autocomplete="off">
+              <label for="afternoonItemBorrowed">Item Borrowed</label>
+              <input id="afternoonItemBorrowed" name="afternoonItemBorrowed" type="text" maxlength="180" placeholder="Borrowed item, if any" autocomplete="off">
+            </fieldset>
+          </div>
+          <p id="roomInfoStatus" class="room-info-status" aria-live="polite"></p>
+          <div class="room-popup-actions">
+            <button id="cancelRoomInfo" class="secondary-button" type="button">Close</button>
+            <button class="primary-button popup-save-button admin-only" type="submit">Save teacher profiles</button>
+          </div>
+        </form>
+      </section>
+
+      <section id="popupPanelInventory" class="popup-panel hidden" data-popup-panel="inventory" role="tabpanel">
+        <p class="records-note">The item names and columns below are based on the Classroom Inventory form you provided. Counts and condition remarks are saved separately for each classroom on this device.</p>
+        <div id="inventoryRoomMeta" class="inventory-meta"></div>
+        <form id="inventoryForm" class="inventory-form">
+          <section class="inventory-subsection" aria-labelledby="classroomInventoryHeading">
+            <div class="inventory-subsection-heading">
+              <div>
+                <p class="eyebrow">CLASSROOM INVENTORY</p>
+                <h3 id="classroomInventoryHeading">Classroom items</h3>
+              </div>
+            </div>
+            <div id="classroomInventoryTable" class="inventory-table-wrap"></div>
+          </section>
+
+          <p id="inventoryStatus" class="room-info-status" aria-live="polite"></p>
+          <div class="room-popup-actions">
+            <button class="primary-button popup-save-button admin-only" type="submit">Save classroom inventory</button>
+          </div>
+        </form>
+      </section>
+
+      <section id="popupPanelBooks" class="popup-panel hidden" data-popup-panel="books" role="tabpanel">
+        <p class="records-note">Books are stored separately for each classroom. These provisional fields are Title, Author/Subject, and Quantity; confirm the final book-record fields with the school before official use.</p>
+        <form id="bookForm" class="book-form admin-only">
+          <input id="bookRecordId" type="hidden" value="">
+          <label for="bookTitle">Book title <span aria-hidden="true">*</span></label>
+          <input id="bookTitle" type="text" maxlength="160" required placeholder="Enter book title">
+          <label for="bookAuthorSubject">Author / Subject</label>
+          <input id="bookAuthorSubject" type="text" maxlength="120" placeholder="Optional">
+          <label for="bookQuantity">Quantity</label>
+          <input id="bookQuantity" type="number" min="0" max="99999" step="1" value="1" required>
+          <div class="book-form-actions">
+            <button id="saveBookButton" class="primary-button popup-save-button" type="submit">Add book</button>
+            <button id="cancelBookEdit" class="secondary-button hidden" type="button">Cancel edit</button>
+          </div>
+        </form>
+        <div id="bookList" class="book-list" aria-live="polite"></div>
+        <p id="bookStatus" class="room-info-status" aria-live="polite"></p>
+      </section>
+    </div>
+  </section>
+
+  <footer id="appFooter" class="site-footer hidden">San Diego Elementary School</footer>
+  <script src="config.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
